@@ -1,13 +1,32 @@
-import pathlib
 import os
 import music21 as m21
 
-KERN_DATASET_PATH = r"/Users/James/Documents/Python/Machine Learning Projects/Generating_melodies/PreProcessing/deutschl/test"
+KERN_DATASET_PATH = r"/Users/James/Documents/Python/MachineLearningProjects/Generating_melodies/PreProcessing/deutschl/test"
+SAVE_DIR = r"/Users/James/Documents/Python/MachineLearningProjects/Generating_melodies/PreProcessing/Dataset"
 ACCEPTABLE_DURATIONS = [0.25, 0.5, 0.75, 1.0, 1.5, 2, 3, 4]
 
 
-def current_working_dir():
-    return pathlib.Path().absolute()
+def encode_song(song, time_step=0.25):
+    # pitch = 60, duration = 1 -> [60, "_". "_", "_"] "_" = 1/16th note
+    encoded_song = []
+    for event in song.flat.notesAndRests:
+        # handle notes
+        if isinstance(event, m21.note.Note):
+            symbol = event.pitch.midi  # midi note version of note
+        elif isinstance(event, m21.note.Rest):
+            symbol = "r"  # rest
+
+        # convert the note/rest into time series notation
+        steps = int(event.duration.quarterLength / time_step)
+        for step in range(steps):
+            if step == 0:
+                encoded_song.append(symbol)
+            else:
+                encoded_song.append("_")
+
+    # cast encoded song to string
+    encoded_song = " ".join([str(i) for i in encoded_song])
+    return encoded_song
 
 
 def load_songs_in_kern(dataset_path):
@@ -54,27 +73,20 @@ def preprocess(dataset_path):
     songs = load_songs_in_kern(dataset_path)
     print(f"Loaded {len(songs)} songs")
 
-    for song in songs:
+    for i, song in enumerate(songs):
         # filter out songs that have non-acceptable durations
         if not has_acceptable_durations(song, ACCEPTABLE_DURATIONS):
             continue
         # transpose songs to Cmaj/Amin
         song = transpose(song)
         # encode songs with music time series representation
-
+        encoded_song = encode_song(song)
         # save songs to text file
+        save_path = os.path.join(SAVE_DIR, str(i))
+        with open(save_path, "w") as fp:
+            fp.write(encoded_song)
 
 
 if __name__ == "__main__":
-
-    songs = load_songs_in_kern(KERN_DATASET_PATH)
-    print(f"Loaded {len(songs)} songs")
-    song = songs[1]
-
-    print(
-        f"Has aceptable duration? {has_acceptable_durations(song, ACCEPTABLE_DURATIONS)}"
-    )
-    transposed_song = transpose(song)
-
-    song.show()
-    transposed_song.show()
+    preprocess(KERN_DATASET_PATH)
+    print(f"Finished preprocessing")
