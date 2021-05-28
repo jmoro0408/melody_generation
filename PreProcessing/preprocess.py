@@ -1,8 +1,12 @@
 import os
 import music21 as m21
+import json
 
 KERN_DATASET_PATH = r"/Users/James/Documents/Python/MachineLearningProjects/Generating_melodies/PreProcessing/deutschl/test"
 SAVE_DIR = r"/Users/James/Documents/Python/MachineLearningProjects/Generating_melodies/PreProcessing/Dataset"
+SINGLE_FILE_DATASET = "file_dataset"
+MAPPING_PATH = "mapping.json"
+SEQUENCE_LENGTH = 64
 ACCEPTABLE_DURATIONS = [0.25, 0.5, 0.75, 1.0, 1.5, 2, 3, 4]
 
 
@@ -87,6 +91,52 @@ def preprocess(dataset_path):
             fp.write(encoded_song)
 
 
-if __name__ == "__main__":
+def load(file_path):
+    with open(file_path, "r") as fp:
+        song = fp.read()
+    return song
+
+
+def create_single_file_dataset(dataset_path, file_dataset_path, sequence_length):
+    new_song_delimiter = "/ " * sequence_length
+    songs = ""
+    # load encoded songs and add delimiters
+    for path, _, files in os.walk(dataset_path):
+        for file in files:
+            file_path = os.path.join(path, file)
+            song = load(file_path)
+            songs = songs + song + " " + new_song_delimiter
+
+    songs = songs[:-1]  # removing empty character at end of string
+
+    # save string that contains all dataset
+    with open(file_dataset_path, "w") as fp:
+        fp.write(songs)
+
+    return songs
+
+
+def create_mapping(songs, mapping_path):
+    mappings = {}
+    # identify the vocabulary
+    songs = songs.split()
+    vocabulary = list(set(songs))
+
+    # create mappings
+    for i, symbol in enumerate(vocabulary):
+        mappings[symbol] = i
+
+    # save vocabulary to a json file
+    with open(mapping_path, "w") as fp:
+        json.dump(mappings, fp, indent=4)
+
+
+def main():
     preprocess(KERN_DATASET_PATH)
+    songs = create_single_file_dataset(SAVE_DIR, SINGLE_FILE_DATASET, SEQUENCE_LENGTH)
+    create_mapping(songs, MAPPING_PATH)
     print(f"Finished preprocessing")
+
+
+if __name__ == "__main__":
+    main()
