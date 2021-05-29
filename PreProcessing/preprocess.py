@@ -4,7 +4,7 @@ import json
 import tensorflow.keras as keras
 import numpy as np
 
-KERN_DATASET_PATH = r"/Users/James/Documents/Python/MachineLearningProjects/Generating_melodies/PreProcessing/deutschl/test"
+KERN_DATASET_PATH = r"/Users/James/Documents/Python/MachineLearningProjects/Generating_melodies/PreProcessing/deutschl/erk"
 SAVE_DIR = r"/Users/James/Documents/Python/MachineLearningProjects/Generating_melodies/PreProcessing/Dataset"
 SINGLE_FILE_DATASET = "file_dataset"
 MAPPING_PATH = "mapping.json"
