@@ -7,7 +7,7 @@ NUM_UNITS = [256]
 LOSS = "sparse_categorical_crossentropy"
 LEARNING_RATE = 0.001
 BATCH_SIZE = 64
-EPOCHS = 50
+EPOCHS = 1 #27
 SAVE_MODEL_PATH = "model.h5"
 
 
