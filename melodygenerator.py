@@ -2,7 +2,7 @@ import tensorflow.keras as keras
 import json
 from preprocess import SEQUENCE_LENGTH, MAPPING_PATH
 import numpy as np
-
+import music21 as m21
 
 class MelodyGenerator:
     def __init__(self, model_path="model.h5"):
@@ -68,11 +68,51 @@ class MelodyGenerator:
 
         return index
 
+    def save_melody(self, melody, step_duration=0.25, format="midi", file_name="mel.mid"):
+        # create a music21 stream
+        stream = m21.stream.Stream()
+
+        start_symbol = None
+        step_counter = 1
+
+        # parse all the symbols in the melody and create note/rest objects
+        for i, symbol in enumerate(melody):
+
+            # handle case in which we have a note/rest
+            if symbol != "_" or i + 1 == len(melody):
+
+                # ensure we're dealing with note/rest beyond the first one
+                if start_symbol is not None:
+
+                    quarter_length_duration = step_duration * step_counter # 0.25 * 4 = 1
+
+                    # handle rest
+                    if start_symbol == "r":
+                        m21_event = m21.note.Rest(quarterLength=quarter_length_duration)
+
+                    # handle note
+                    else:
+                        m21_event = m21.note.Note(int(start_symbol), quarterLength=quarter_length_duration)
+
+                    stream.append(m21_event)
+
+                    # reset the step counter
+                    step_counter = 1
+
+                start_symbol = symbol
+
+            # handle case in which we have a prolongation sign "_"
+            else:
+                step_counter += 1
+
+        # write the m21 stream to a midi file
+        stream.write(format, file_name)
 
 if __name__ == "__main__":
     mg = MelodyGenerator()
     seed = "55 55 60 _ _ _ 67 _ _ 65 64"
     melody = mg.generate_melody(
-        seed, num_steps=500, max_sequence_length=SEQUENCE_LENGTH, temperature=0.7
+        seed, num_steps=500, max_sequence_length=SEQUENCE_LENGTH, temperature=0.8
     )
     print(melody)
+    mg.save_melody(melody)
