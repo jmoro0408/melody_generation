@@ -3,6 +3,7 @@
 play_krn.py
 music21_setup.py
 .vscode/
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
