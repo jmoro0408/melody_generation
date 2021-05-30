@@ -72,27 +72,6 @@ def transpose(song):
     return transposed_song
 
 
-def preprocess(dataset_path):
-    pass
-    # Load dataset
-    print("Loading songs...")
-    songs = load_songs_in_kern(dataset_path)
-    print(f"Loaded {len(songs)} songs")
-
-    for i, song in enumerate(songs):
-        # filter out songs that have non-acceptable durations
-        if not has_acceptable_durations(song, ACCEPTABLE_DURATIONS):
-            continue
-        # transpose songs to Cmaj/Amin
-        song = transpose(song)
-        # encode songs with music time series representation
-        encoded_song = encode_song(song)
-        # save songs to text file
-        save_path = os.path.join(SAVE_DIR, str(i))
-        with open(save_path, "w") as fp:
-            fp.write(encoded_song)
-
-
 def load(file_path):
     with open(file_path, "r") as fp:
         song = fp.read()
@@ -167,6 +146,27 @@ def generate_training_sequences(sequence_length):
     targets = np.array(targets)
 
     return inputs, targets
+
+
+def preprocess(dataset_path):
+    pass
+    # Load dataset
+    print("Loading songs...")
+    songs = load_songs_in_kern(dataset_path)
+    print(f"Loaded {len(songs)} songs")
+
+    for i, song in enumerate(songs):
+        # filter out songs that have non-acceptable durations
+        if not has_acceptable_durations(song, ACCEPTABLE_DURATIONS):
+            continue
+        # transpose songs to Cmaj/Amin
+        song = transpose(song)
+        # encode songs with music time series representation
+        encoded_song = encode_song(song)
+        # save songs to text file
+        save_path = os.path.join(SAVE_DIR, str(i))
+        with open(save_path, "w") as fp:
+            fp.write(encoded_song)
 
 
 def main():

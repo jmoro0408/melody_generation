@@ -2,7 +2,7 @@ import tensorflow.keras as keras
 from preprocess import generate_training_sequences, SEQUENCE_LENGTH
 
 
-OUTPUT_UNITS = 18
+OUTPUT_UNITS = 38
 NUM_UNITS = [256]
 LOSS = "sparse_categorical_crossentropy"
 LEARNING_RATE = 0.001
@@ -26,6 +26,8 @@ def build_model(output_units, num_units, loss, learning_rate):
         metrics=["accuracy"],
     )
     model.summary()
+
+    return model
 
 
 def train(
