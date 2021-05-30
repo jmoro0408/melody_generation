@@ -1,6 +1,8 @@
 #mystuff
 /PreProcessing/deutschl
 play_krn.py
+music21_setup.py
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
