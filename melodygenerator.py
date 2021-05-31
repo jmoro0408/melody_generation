@@ -3,6 +3,9 @@ import json
 from preprocess import SEQUENCE_LENGTH, MAPPING_PATH
 import numpy as np
 import music21 as m21
+import os
+
+MELODY_SAVE_PATH = r"Melodies"
 
 
 class MelodyGenerator:
@@ -70,7 +73,12 @@ class MelodyGenerator:
         return index
 
     def save_melody(
-        self, melody, step_duration=0.25, format="midi", file_name="mel.mid"
+        self,
+        melody,
+        step_duration=0.25,
+        format="midi",
+        file_name="mel.mid",
+        save_path=MELODY_SAVE_PATH,
     ):
         # create a music21 stream
         stream = m21.stream.Stream()
@@ -113,16 +121,20 @@ class MelodyGenerator:
                 step_counter += 1
 
         # write the m21 stream to a midi file
-        stream.write(format, file_name)
+        stream.write(format, fp=os.path.join(save_path, file_name))
 
 
 if __name__ == "__main__":
     mg = MelodyGenerator()
-    seed1 = "55 55 60 _ _ _ 67 _ _ 65 64"
-    seed2 = "60 _ 62 _ 64 _ _ _ 62 _ _ _ " 
-    seed3 = "60 _ _ 55 55 _ 55 _ 57 _ 59 _"
-    for i, seed in enumerate([seed1, seed2, seed3]):
+    seeds = [
+        "55 55 60 _ _ _ 67 _ _ 65 64",
+        "60 _ _ _ _ _ _ _ 60 _ _ _ 64 _ _ _ _ _ _ _ 65 _ _ _ 67 _ _ _ _ _ _ _ 67 _ _ _",
+        "60 _ _ 55 55 _ 55 _ 57 _ 59 _",
+        "55 _ 60 _ _ _ 60 _ 64 _ 62 _ 60 _",
+    ]
+    for i, seed in enumerate(seeds):
         melody = mg.generate_melody(
-        seed, num_steps=500, max_sequence_length=SEQUENCE_LENGTH, temperature=0.7
-    )
-        mg.save_melody(melody, file_name = f"mel_{i}.mid")
+            seed, num_steps=500, max_sequence_length=SEQUENCE_LENGTH, temperature=0.85
+        )
+        melody_file_name = f"mel_{i}.mid"
+        mg.save_melody(melody,file_name = melody_file_name )
