@@ -137,4 +137,4 @@ if __name__ == "__main__":
             seed, num_steps=500, max_sequence_length=SEQUENCE_LENGTH, temperature=0.85
         )
         melody_file_name = f"mel_{i}.mid"
-        mg.save_melody(melody,file_name = melody_file_name )
+        mg.save_melody(melody, file_name=melody_file_name)

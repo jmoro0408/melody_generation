@@ -4,7 +4,7 @@ play_krn.py
 music21_setup.py
 .vscode/
 .vscode
-
+.DS_Store
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
