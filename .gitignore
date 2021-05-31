@@ -5,6 +5,8 @@ music21_setup.py
 .vscode/
 .vscode
 .DS_Store
+Examples/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
