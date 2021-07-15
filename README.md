@@ -2,7 +2,7 @@
 ## Creating new melodies with RNNs.
 
 
-This program uses the [ESAC Dataset](http://www.esac-data.org/) to generate new melodies based on simple folk songs using a recurrent neural network. It is a code along from The Sound of AI ["Melody Generation with RNN-LSTM"](https://www.youtube.com/playlist?list=PL-wATfeyAMNr0KMutwtbeDCmpwvtul-Xz) youtube series. 
+This program uses the [ESAC Dataset](http://www.esac-data.org/) to generate new melodies based on simple folk songs using a recurrent neural network. 
 
 The program relies heavily on the Music21 library to manipulate .krn data into a format that is processable by the neural net. The program first imports the .krn data, checks if all notes are of an acceptable duration (from a whole note to a sixteenth note), transposes the song to either Cmaj or Amin (to simplify the model), and encodes the song to a time-series representation. 
 The time series representation uses the midi-style integer representation for the note pitch (i.e C4 -> 60) and underscores (_ _ _) for duration in sixteenth notes, rests are represented by "r" with underscore for their durations. 
